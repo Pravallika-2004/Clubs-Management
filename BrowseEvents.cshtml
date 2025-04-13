@@ -1,0 +1,204 @@
+﻿@model WebApplication4.Models.CLUB
+
+@{
+    ViewBag.Title = "Browse Events";
+    Layout = "~/Views/Shared/_ClubsLayout.cshtml";
+}
+
+<style>
+    body {
+        margin: 0;
+        overflow-x: hidden;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4f6f8;
+    }
+
+    .carousel-item img {
+        height: 570px;
+        object-fit: cover;
+        width: 100%;
+        transition: transform 0.5s ease-in-out;
+        border-radius: 10px;
+    }
+
+        .carousel-item img:hover {
+            transform: scale(1.02);
+        }
+
+    .carousel,
+    .carousel-inner,
+    .carousel-item {
+        width: 105vw;
+        margin-left: -57px;
+    }
+
+    h3 {
+        margin-top: 40px;
+        margin-bottom: 20px;
+        font-weight: 600;
+        text-align: center;
+        color: #343a40;
+    }
+
+    .event-scroll-container {
+        scrollbar-width: thin;
+        scrollbar-color: #ccc transparent;
+    }
+
+        .event-scroll-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .event-scroll-container::-webkit-scrollbar-thumb {
+            background-color: #ccc;
+            border-radius: 4px;
+        }
+
+    .event-card {
+        background: linear-gradient(135deg, #ffffff, #f1f4f9);
+        margin-bottom: 20px;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+        border: 2px solid transparent;
+        cursor: pointer;
+    }
+
+        .event-card:hover {
+            transform: translateY(-5px) scale(1.03);
+            border: 2px solid #E96C20; /* icon color */
+            box-shadow: 0px 12px 25px rgba(233, 108, 32, 0.2); /* lighter orange shadow */
+        }
+
+        .event-card:active {
+            background-color: #fff5ed; /* soft light-orange background */
+            box-shadow: 0px 4px 8px rgba(233, 108, 32, 0.3); /* slightly stronger for click effect */
+            transform: scale(0.98);
+        }
+
+
+    .card-body {
+        padding: 15px;
+        background-color: white;
+        border-top: 1px solid #eee;
+    }
+
+    .card-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+    }
+
+    .card-text {
+        font-size: 0.9rem;
+        color: #555;
+    }
+
+        .card-text i {
+            color: #E96C20;
+            margin-right: 5px;
+        }
+
+    .event-location, .event-time, .event-club {
+        display: inline-block;
+        background-color: #e7f1ff;
+        color: #E96C20;
+        border-radius: 50px;
+        padding: 4px 12px;
+        margin-top: 5px;
+        font-size: 0.8rem;
+    }
+
+    .event-scroll-container {
+        padding: 0 20px;
+    }
+
+    .comment-card i {
+        font-size: 40px;
+        margin-right: 10px;
+        color: #E96C20; /* Matches your orange theme */
+    }
+</style>
+
+
+<div id="imageCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3000" data-bs-pause="false">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#imageCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#imageCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#imageCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="~/wwwroot/Images/im1.png" class="d-block w-100" alt="Event 1">
+        </div>
+        <div class="carousel-item">
+            <img src="~/wwwroot/Images/im2.jpg" class="d-block w-100" alt="Event 2">
+        </div>
+        <div class="carousel-item">
+            <img src="~/wwwroot/Images/Screenshot 2025-04-08 160030.png" class="d-block w-100" alt="Event 3">
+        </div>
+    </div>
+</div>
+
+<h3 class="mt-5">Upcoming Events</h3>
+
+@if (ViewBag.UpcomingEvents != null)
+{
+    <div class="event-scroll-container d-flex overflow-auto gap-3 py-3">
+        @foreach (var eventItem in ViewBag.UpcomingEvents)
+        {
+            <a href="@Url.Action("EventDetails", "Clubs", new { id = eventItem.EventID })" class="text-decoration-none text-dark">
+                <div class="card flex-shrink-0 event-card" style="min-width: 300px; max-width: 300px;">
+                    <img src="@eventItem.EventPoster" class="card-img-top" style="height: 200px; object-fit: cover;" alt="Event Poster" />
+                    <div class="card-body">
+                        <h5 class="card-title text-truncate" title="@eventItem.EventName">@eventItem.EventName</h5>
+                        <p class="card-text mb-1">
+                            <i class="bi bi-clock-fill"></i>
+                            @eventItem.EventStartDateAndTime.ToString("MM/dd/yyyy HH:mm")
+                        </p>
+                        <p class="card-text mb-1">
+                            <i class="bi bi-geo-alt-fill"></i>
+                            ICFAI Foundation, Hyderabad
+                        </p>
+                        <p class="card-text">
+                            <i class="bi bi-people-fill"></i>
+                            @{
+                                var clubName = ViewBag.ClubName ?? "Club";
+                                @clubName
+                            }
+                        </p>
+                    </div>
+                </div>
+            </a>
+        }
+    </div>
+}
+else
+{
+    <p>No upcoming events found.</p>
+}
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+    $(document).ready(function () {
+        $('.carousel').carousel(); // Initialize the carousel
+    });
+
+
+    function handleCardClick(eventName) {
+        alert("You clicked on event: " + eventName);
+        // You can later redirect to event details page here
+        // window.location.href = '/Events/Details/' + encodeURIComponent(eventName);
+    }
+
+
+    
+</script>
